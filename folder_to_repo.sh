@@ -86,7 +86,13 @@ if [ -d ".git" ]; then
         git add -A
         
         # Check if there are changes to commit
-        if ! git diff-index --quiet HEAD --; then
+        # First check if HEAD exists (repository has commits)
+        if ! git rev-parse HEAD &> /dev/null; then
+            # No commits yet, just commit everything
+            git commit -m "Add files from drag-and-drop"
+            print_info "Changes committed"
+        elif ! git diff-index --quiet HEAD --; then
+            # Has commits, check for changes
             git commit -m "Add files from drag-and-drop"
             print_info "Changes committed"
         else

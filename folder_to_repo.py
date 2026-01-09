@@ -156,15 +156,28 @@ def folder_to_repo(folder_path, repo_name=None, visibility="public"):
             run_command("git add -A")
             
             # Check if there are changes to commit
-            result = run_command(
-                "git diff-index --quiet HEAD --",
+            # First check if HEAD exists (repository has commits)
+            head_check = run_command(
+                "git rev-parse HEAD",
+                capture_output=True,
                 check=False
             )
-            if result.returncode != 0:
+            
+            if head_check.returncode != 0:
+                # No commits yet, just commit everything
                 run_command('git commit -m "Add files from drag-and-drop"')
                 print_info("Changes committed")
             else:
-                print_info("No changes to commit")
+                # Has commits, check for changes
+                result = run_command(
+                    "git diff-index --quiet HEAD --",
+                    check=False
+                )
+                if result.returncode != 0:
+                    run_command('git commit -m "Add files from drag-and-drop"')
+                    print_info("Changes committed")
+                else:
+                    print_info("No changes to commit")
             
             # Try to push to remote
             push_result = run_command(
