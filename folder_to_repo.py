@@ -217,7 +217,11 @@ def folder_to_repo(folder_path, repo_name=None, visibility="public"):
         # Set default branch to main (after initial commit)
         run_command("git branch -M main")
     
-    # Create GitHub repository (only if no remote exists)
+    # At this point, we have a git repository without a remote
+    # This happens in two cases:
+    # 1. Folder was not a git repo (we just initialized it above)
+    # 2. Folder was a git repo but had no 'origin' remote
+    # Create GitHub repository and set it as the origin remote
     print_info(f"Creating GitHub repository: {repo_name}...")
     result = run_command(
         f"gh repo create {repo_name} --{visibility} --source=. --remote=origin --push",

@@ -148,7 +148,11 @@ EOF
     git branch -M main
 fi
 
-# Create GitHub repository (only if no remote exists)
+# At this point, we have a git repository without a remote
+# This happens in two cases:
+# 1. Folder was not a git repo (we just initialized it above)
+# 2. Folder was a git repo but had no 'origin' remote
+# Create GitHub repository and set it as the origin remote
 print_info "Creating GitHub repository: $REPO_NAME..."
 if gh repo create "$REPO_NAME" --$VISIBILITY --source=. --remote=origin --push; then
     print_info "✓ Repository created and pushed successfully!"
