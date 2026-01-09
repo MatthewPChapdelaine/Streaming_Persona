@@ -1,0 +1,55 @@
+name: Test Scripts
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-scripts:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    
+    - name: Check bash script syntax
+      run: bash -n folder_to_repo.sh
+    
+    - name: Check Python script syntax
+      run: python3 -m py_compile folder_to_repo.py
+    
+    - name: Test Python script help
+      run: python3 folder_to_repo.py --help
+    
+    - name: Verify scripts are executable
+      run: |
+        test -x folder_to_repo.sh || exit 1
+        test -x folder_to_repo.py || exit 1
+        echo "✓ Scripts are executable"
+    
+    - name: Test script error handling (no args)
+      run: |
+        ./folder_to_repo.sh 2>&1 | grep -q "Usage:" && echo "✓ Bash script shows usage" || exit 1
+    
+    - name: Create test folder
+      run: |
+        mkdir -p /tmp/test-folder
+        echo "# Test" > /tmp/test-folder/README.md
+        echo "test file" > /tmp/test-folder/test.txt
+    
+    - name: Test folder validation (Python)
+      run: |
+        python3 folder_to_repo.py /nonexistent 2>&1 | grep -q "Folder not found" && echo "✓ Folder validation works" || exit 1
+    
+    - name: All tests passed
+      run: echo "✅ All script tests passed successfully!"
