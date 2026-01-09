@@ -1,0 +1,20 @@
+{
+  "name": "Streaming Persona - Folder to Repo Tool",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  
+  "postCreateCommand": "chmod +x folder_to_repo.sh folder_to_repo.py",
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.vscode-pull-request-github"
+      ]
+    }
+  },
+  
+  "remoteUser": "codespace"
+}
