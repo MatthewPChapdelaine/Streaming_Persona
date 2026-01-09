@@ -201,9 +201,6 @@ def folder_to_repo(folder_path, repo_name=None, visibility="public"):
         print_info("Initializing git repository...")
         run_command("git init")
         
-        # Set default branch to main
-        run_command("git branch -M main")
-        
         # Create .gitignore if it doesn't exist
         if not Path(".gitignore").exists():
             print_info("Creating default .gitignore...")
@@ -216,8 +213,11 @@ def folder_to_repo(folder_path, repo_name=None, visibility="public"):
         # Create initial commit
         print_info("Creating initial commit...")
         run_command('git commit -m "Initial commit from drag-and-drop"')
+        
+        # Set default branch to main (after initial commit)
+        run_command("git branch -M main")
     
-    # Create GitHub repository
+    # Create GitHub repository (only if no remote exists)
     print_info(f"Creating GitHub repository: {repo_name}...")
     result = run_command(
         f"gh repo create {repo_name} --{visibility} --source=. --remote=origin --push",

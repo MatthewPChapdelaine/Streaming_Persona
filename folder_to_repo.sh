@@ -113,9 +113,6 @@ else
     print_info "Initializing git repository..."
     git init
     
-    # Set default branch to main
-    git branch -M main
-    
     # Create .gitignore if it doesn't exist
     if [ ! -f ".gitignore" ]; then
         print_info "Creating default .gitignore..."
@@ -146,9 +143,12 @@ EOF
     # Create initial commit
     print_info "Creating initial commit..."
     git commit -m "Initial commit from drag-and-drop"
+    
+    # Set default branch to main (after initial commit)
+    git branch -M main
 fi
 
-# Create GitHub repository
+# Create GitHub repository (only if no remote exists)
 print_info "Creating GitHub repository: $REPO_NAME..."
 if gh repo create "$REPO_NAME" --$VISIBILITY --source=. --remote=origin --push; then
     print_info "✓ Repository created and pushed successfully!"
